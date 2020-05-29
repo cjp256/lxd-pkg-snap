@@ -936,7 +936,7 @@ parts:
       - squashfs-tools
       - usbutils
       - xdelta3
-    plugin: nogetgo
+    plugin: go
     go-buildtags:
       - libsqlite3
     go-importpath: github.com/lxc/lxd
@@ -945,11 +945,10 @@ parts:
       - github.com/lxc/lxd/lxc-to-lxd
       - github.com/lxc/lxd/lxd
       - github.com/lxc/lxd/lxd-benchmark
-    override-build: |
-      set -ex
+    override-pull: |
+      git clone  https://github.com/lxc/lxd $SNAPCRAFT_PART_SRC -b lxd-4.0.1
+      cd $SNAPCRAFT_PART_SRC
 
-      # Git cherry-picks
-      cd ../src
       git config user.email "noreply@linuxcontainers.org"
       git config user.name "LXD snap builder"
 
@@ -1538,6 +1537,10 @@ parts:
       git cherry-pick 5a927cb3c4928a960a2be77bb9df48f3a853d782  # lxd/storage/drivers: MinBlockBoundary usage
       git cherry-pick 874d35a2f471afa9461c5e264433b1ea01c1bdef  # lxd/resources: Handle missing cache size/type
       git cherry-pick 069dac9eaaba63ea634282530f50cd1316507eda  # Update documentation with backup compression
+
+    override-build: |
+      # Change to source directory for building
+      cd $SNAPCRAFT_PART_SRC
 
       # Download any new dependencies
       export GOPATH=$(realpath ../go)
